@@ -1,0 +1,1 @@
+Tankradar shows real-time fuel prices around you, the price history of every station, the area average, the best time of day to refuel and the cheapest fuel stops along your route – with hand-off to Google Maps, Apple Maps, Waze, OsmAnd and GPX. Includes price alerts, calculators and a fuel log. No account, no tracking, no ads. Free software (MIT).

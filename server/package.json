@@ -1,0 +1,12 @@
+{
+  "name": "tankradar-server",
+  "version": "1.0.0",
+  "description": "Self-hosted Tankradar backend: collects fuel prices continuously (Tankerkönig), serves price histories and acts as an API-key-protecting cache.",
+  "license": "MIT",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "engines": { "node": ">=22.13" }
+}

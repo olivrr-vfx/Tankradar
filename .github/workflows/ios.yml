@@ -1,0 +1,53 @@
+name: iOS app (.ipa)
+
+# Builds an unsigned Tankradar.ipa on a GitHub macOS runner.
+# Install it on an iPhone with AltStore / SideStore / Sideloadly (free Apple ID is enough),
+# see docs/INSTALL_IOS.md. Run manually via "Actions → iOS app (.ipa) → Run workflow",
+# or push a tag v* to attach it to the release.
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  ipa:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build web app and sync into the iOS project
+        run: npm run build && npx cap sync ios
+      - name: Archive (unsigned)
+        run: |
+          xcodebuild \
+            -workspace ios/App/App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/Tankradar.xcarchive" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            archive | tail -n 40
+      - name: Package .ipa
+        run: |
+          mkdir -p "$RUNNER_TEMP/ipa/Payload" out
+          cp -R "$RUNNER_TEMP/Tankradar.xcarchive/Products/Applications/App.app" "$RUNNER_TEMP/ipa/Payload/"
+          (cd "$RUNNER_TEMP/ipa" && zip -qry "$GITHUB_WORKSPACE/out/Tankradar-unsigned.ipa" Payload)
+          ls -lh out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Tankradar-ios
+          path: out/Tankradar-unsigned.ipa
+      - name: Attach to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: out/Tankradar-unsigned.ipa

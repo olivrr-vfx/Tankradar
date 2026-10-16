@@ -1,0 +1,108 @@
+:root {
+  --font: 'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --radius-s: 8px;
+  --radius: 14px;
+  --radius-l: 22px;
+  --nav-h: 64px;
+  --rail-w: 88px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* Brand */
+  --brand: #2f5bff;
+  --brand-strong: #1f44d6;
+  --brand-soft: #e8edff;
+  --brand-ink: #ffffff;
+  --accent: #10c5c1;
+
+  /* Surfaces & ink */
+  --bg: #f4f6fa;
+  --surface: #ffffff;
+  --surface-2: #f0f2f7;
+  --surface-3: #e5e9f1;
+  --border: #dde2ec;
+  --ink: #0d1726;
+  --ink-2: #44506a;
+  --ink-3: #6b7690;
+  --shadow: 0 1px 2px rgba(13, 23, 38, 0.06), 0 6px 24px rgba(13, 23, 38, 0.08);
+  --shadow-l: 0 10px 40px rgba(13, 23, 38, 0.18);
+
+  /* Status (price levels) – always paired with label/icon */
+  --cheap: #0e8443;
+  --cheap-soft: #e3f6eb;
+  --mid: #a86400;
+  --mid-soft: #fdf1da;
+  --expensive: #cc2f32;
+  --expensive-soft: #fde6e6;
+
+  /* Charts */
+  --chart-1: #2f5bff;
+  --chart-ref: #8a94a8;
+  --chart-grid: #e6e9f0;
+  --chart-fill: rgba(47, 91, 255, 0.1);
+  --pin-ink: #ffffff;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --brand: #6b8cff;
+    --brand-strong: #8ea6ff;
+    --brand-soft: #1c2647;
+    --brand-ink: #0a1020;
+    --accent: #3fe0d8;
+    --bg: #0a0f1a;
+    --surface: #121a29;
+    --surface-2: #182133;
+    --surface-3: #212c42;
+    --border: #263147;
+    --ink: #eef2fa;
+    --ink-2: #b4bdd0;
+    --ink-3: #8590a8;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 24px rgba(0, 0, 0, 0.35);
+    --shadow-l: 0 10px 40px rgba(0, 0, 0, 0.55);
+    --cheap: #3ccf7c;
+    --cheap-soft: #10301f;
+    --mid: #f0b43c;
+    --mid-soft: #33270d;
+    --expensive: #ff6b6b;
+    --expensive-soft: #3a1618;
+    --chart-1: #7d9bff;
+    --chart-ref: #7d879c;
+    --chart-grid: #232d42;
+    --chart-fill: rgba(125, 155, 255, 0.14);
+    --pin-ink: #0a0f1a;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --brand: #6b8cff;
+  --brand-strong: #8ea6ff;
+  --brand-soft: #1c2647;
+  --brand-ink: #0a1020;
+  --accent: #3fe0d8;
+  --bg: #0a0f1a;
+  --surface: #121a29;
+  --surface-2: #182133;
+  --surface-3: #212c42;
+  --border: #263147;
+  --ink: #eef2fa;
+  --ink-2: #b4bdd0;
+  --ink-3: #8590a8;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 24px rgba(0, 0, 0, 0.35);
+  --shadow-l: 0 10px 40px rgba(0, 0, 0, 0.55);
+  --cheap: #3ccf7c;
+  --cheap-soft: #10301f;
+  --mid: #f0b43c;
+  --mid-soft: #33270d;
+  --expensive: #ff6b6b;
+  --expensive-soft: #3a1618;
+  --chart-1: #7d9bff;
+  --chart-ref: #7d879c;
+  --chart-grid: #232d42;
+  --chart-fill: rgba(125, 155, 255, 0.14);
+  --pin-ink: #0a0f1a;
+  color-scheme: dark;
+}

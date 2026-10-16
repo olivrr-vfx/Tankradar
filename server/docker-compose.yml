@@ -1,0 +1,12 @@
+services:
+  tankradar:
+    build: .
+    image: ghcr.io/olivrr-vfx/tankradar-server:latest
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "8787:8787"
+    volumes:
+      - tankradar-data:/data
+volumes:
+  tankradar-data:
