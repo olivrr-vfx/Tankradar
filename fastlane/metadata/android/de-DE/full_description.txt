@@ -1,0 +1,18 @@
+<b>Tankradar – günstig tanken. Zur richtigen Zeit. Am richtigen Ort.</b>
+
+Tankradar zeigt dir die aktuellen Spritpreise aller Tankstellen in deiner Umgebung – und noch viel mehr:
+
+<ul>
+<li><b>Karte & Liste</b> mit Echtzeitpreisen (Super E5, E10, Diesel), farblich nach günstig / mittel / teuer.</li>
+<li><b>Preisverlauf</b> jeder Tankstelle (24 h bis 90 Tage) und der <b>Durchschnitt deiner Umgebung</b>.</li>
+<li><b>Beste Tankzeit</b>: Tankradar lernt das Tagesmuster und sagt dir, ob du jetzt tanken oder warten solltest.</li>
+<li><b>Routenplaner</b>: findet die günstigsten Tankstopps entlang deiner Strecke, berechnet die Ankunftszeit an jeder Tankstelle, den erwarteten Preis dann und wie viel du dort tanken solltest – inklusive Vergleich der Abfahrtszeit.</li>
+<li><b>Übergabe an Navi-Apps</b>: Google Maps (mit Zwischenstopps), Apple Karten, Waze, OsmAnd/Organic Maps, GPX-Export, Kalender-Erinnerung.</li>
+<li><b>Preisrechner</b>: Tankfüllung, „Lohnt sich der Umweg?“, Fahrtkosten, Jahresersparnis.</li>
+<li><b>Favoriten & Preisalarme</b>, <b>Tankbuch</b> mit Verbrauch und Kosten.</li>
+<li>Hell/Dunkel, Deutsch/Englisch, offline-fähig.</li>
+</ul>
+
+Datenquellen: Tankerkönig / Markttransparenzstelle für Kraftstoffe (Deutschland, kostenloser API-Key), E-Control (Österreich) oder ein eigener Tankradar-Server. Ohne Key startet die App im Demo-Modus.
+
+Kein Konto, kein Tracking, keine Werbung. Freie Software (MIT).
