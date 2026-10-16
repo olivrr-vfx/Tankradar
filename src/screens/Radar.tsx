@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { MapView, type MapPin } from '../components/MapView';
 import { Attribution } from '../components/Attribution';
+import { InstallHint } from '../components/InstallHint';
 import { PlaceSearch } from '../components/PlaceSearch';
 import { Sheet, type SheetState } from '../components/Sheet';
 import { StationRow } from '../components/StationRow';
@@ -158,6 +159,7 @@ export function Radar() {
       )}
 
       <Sheet state={sheet} onState={setSheet} header={header}>
+        <InstallHint />
         {isDemo && (
           <div className="banner banner-info">
             <Icon name="info" size={18} />

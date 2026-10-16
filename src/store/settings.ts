@@ -25,6 +25,7 @@ export interface SettingsState {
   navApp: NavApp | 'ask';
   autoRefreshMin: number;
   onboarded: boolean;
+  installHintDismissed: boolean;
   set: (patch: Partial<Omit<SettingsState, 'set'>>) => void;
 }
 
@@ -51,6 +52,7 @@ export const useSettings = create<SettingsState>()(
       navApp: 'ask',
       autoRefreshMin: 5,
       onboarded: false,
+      installHintDismissed: false,
       set: (patch) => set(patch),
     }),
     { name: 'tankradar.settings', version: 1 },

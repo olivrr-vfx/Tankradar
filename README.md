@@ -59,7 +59,7 @@ Karte: [OpenFreeMap](https://openfreemap.org) mit Daten von © OpenStreetMap. Ro
 - **Web/PWA:** Mit dem Workflow `pages.yml` wird die App auf GitHub Pages veröffentlicht. Im Browser „Zum Startbildschirm hinzufügen“ bzw. „Installieren“ wählen.
 - **Android:** Die APK liegt in den [Releases](../../releases). Metadaten für F-Droid liegen unter `fastlane/`.
 - **Windows / macOS / Linux:** Installer (`.msi`/`.exe`, `.dmg`, `.AppImage`/`.deb`/`.rpm`) liegen ebenfalls in den Releases.
-- **iOS:** `npm run ios` öffnet das Xcode-Projekt. Zum Verteilen braucht es einen Apple-Developer-Account.
+- **iPhone/iPad:** Am einfachsten Safari → Teilen → *Zum Home-Bildschirm*. Als native App per Sideloading (AltStore, SideStore, Sideloadly) oder über TestFlight. Alle Wege stehen in [docs/INSTALL_IOS.md](docs/INSTALL_IOS.md).
 
 ## Entwicklung
 

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Icon, Logo, type IconName } from '../components/Icon';
 import { useT } from '../i18n';
+import { InstallHint } from '../components/InstallHint';
 
 export function More() {
   const t = useT();
@@ -19,6 +20,7 @@ export function More() {
           <p className="muted small">{t('app.tagline')}</p>
         </div>
       </div>
+      <InstallHint force />
       <nav className="more-list">
         {items.map((i) => (
           <Link key={i.to} to={i.to}>

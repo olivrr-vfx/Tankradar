@@ -701,6 +701,21 @@ input[type='range'] {
   background: var(--brand-soft);
   color: var(--ink);
 }
+.banner-install {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  align-items: flex-start;
+}
+.banner-install > svg {
+  color: var(--brand);
+  margin-top: 2px;
+}
+.banner-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: none !important;
+}
 .banner-error {
   background: var(--expensive-soft);
   color: var(--ink);

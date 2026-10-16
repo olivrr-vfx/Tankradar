@@ -316,6 +316,11 @@ export const de = {
 
   'update.available': 'Neue Version verfügbar.',
   'update.reload': 'Aktualisieren',
+  'install.title': 'Tankradar als App installieren',
+  'install.ios': 'Tippe unten in Safari auf „Teilen“ und dann auf „Zum Home-Bildschirm“. Dann startet Tankradar im Vollbild wie eine normale App.',
+  'install.other': 'Installiere Tankradar als App: Browser-Menü → „App installieren“ bzw. „Zum Startbildschirm hinzufügen“.',
+  'install.button': 'Installieren',
+  'install.dismiss': 'Später',
   'offline': 'Offline – zeige zuletzt geladene Daten.',
 };
 

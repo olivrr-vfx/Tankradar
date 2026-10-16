@@ -318,5 +318,10 @@ export const en: Dict = {
 
   'update.available': 'New version available.',
   'update.reload': 'Update',
+  'install.title': 'Install Tankradar as an app',
+  'install.ios': 'In Safari, tap “Share” and then “Add to Home Screen”. Tankradar then starts full-screen like a regular app.',
+  'install.other': 'Install Tankradar as an app: browser menu → “Install app” or “Add to Home screen”.',
+  'install.button': 'Install',
+  'install.dismiss': 'Later',
   'offline': 'Offline – showing last loaded data.',
 };
