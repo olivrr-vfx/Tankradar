@@ -18,6 +18,7 @@ import { StationDetail } from './screens/StationDetail';
 import { Stats } from './screens/Stats';
 import { isNative, platformName } from './services/platform';
 import { useData } from './store/data';
+import { haptic } from './services/haptics';
 import { useSettings } from './store/settings';
 
 interface NavItem {
@@ -150,6 +151,9 @@ function Layout() {
   useNativeIntegration();
   useShortcuts();
   const fullBleed = location.pathname === '/' || location.pathname === '/route';
+  const tabIndex = ['/stats', '/logbook', '/settings', '/more'].includes(location.pathname)
+    ? 4
+    : TABS.findIndex((i) => i.to === location.pathname);
 
   useEffect(() => {
     document.documentElement.dataset.platform = platformName();
@@ -185,11 +189,14 @@ function Layout() {
       </nav>
       <main id="main" className={`main ${fullBleed ? 'full-bleed' : ''}`}>
         <OfflineBar />
-        <Outlet />
+        <div key={location.pathname.split('/')[1] || 'radar'} className={`route-anim ${fullBleed ? 'fill' : ''}`}>
+          <Outlet />
+        </div>
       </main>
-      <nav className="tabbar" aria-label="Navigation">
+      <nav className="tabbar" aria-label="Navigation" style={{ ['--tab' as string]: tabIndex }}>
+        {tabIndex >= 0 && <span className="tab-indicator" aria-hidden="true" />}
         {TABS.map((i) => (
-          <NavLink key={i.to} to={i.to} end={i.to === '/'} className={({ isActive }) => `tab ${isActive || (i.to === '/more' && ['/stats', '/logbook', '/settings'].includes(location.pathname)) ? 'active' : ''}`}>
+          <NavLink key={i.to} to={i.to} end={i.to === '/'} onClick={() => void haptic('light')} className={({ isActive }) => `tab ${isActive || (i.to === '/more' && ['/stats', '/logbook', '/settings'].includes(location.pathname)) ? 'active' : ''}`}>
             <Icon name={i.icon} size={22} />
             <span>{t(i.key)}</span>
           </NavLink>

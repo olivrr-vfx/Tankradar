@@ -204,7 +204,7 @@ export function Stats() {
       </div>
 
       <Card title={`Top 10 – ${t(`fuel.${fuel}`)}`}>
-        <table className="table">
+        <div className="table-wrap"><table className="table">
           <thead>
             <tr>
               <th>#</th>
@@ -231,7 +231,7 @@ export function Stats() {
                 </tr>
               ))}
           </tbody>
-        </table>
+        </table></div>
       </Card>
       <Attribution />
     </div>

@@ -29,6 +29,7 @@
 | | |
 |---|---|
 | 🗺️ **Radar (Karte & Liste)** | Echtzeitpreise für Super E5, E10 und Diesel. Pins und Liste sind nach *günstig / mittel / teuer* eingefärbt (immer mit Text oder Symbol, nie nur über die Farbe). Dazu Umkreis 1–25 km, Sortierung nach Preis oder Entfernung, „Nur geöffnete“ und „Hier suchen“ nach dem Verschieben der Karte. |
+| 🏷️ **Logos & Außenbilder** | Jede Marke hat ein Logo in ihren Markenfarben. Auf Wunsch lädt die App das echte Logo der Marke. Tankstellenfotos kommen von Mapillary bzw. Wikimedia Commons, dazu gibt es einen Link zu Street View. Ohne Foto zeigt die App eine animierte Illustration: Himmel passend zur Tageszeit, Preismast mit den Live-Preisen. |
 | 📈 **Preisverlauf je Tankstelle** | Als Stufendiagramm über 24 h und 7 Tage, als Tagesmittel mit Min/Max-Band über 30 und 90 Tage. Dazu Min, Max, Änderungen pro Tag und Vergleich mit dem Ø der Umgebung. |
 | 📊 **Gebietsstatistik** | Günstigster Preis, Ø, Median, Maximum, Preisverteilung, Markenvergleich, Gebietstrend über 30 Tage und Top-10-Tabelle. |
 | ⏰ **Beste Tankzeit** | Tankradar lernt das Tagesprofil jeder Tankstelle und jedes Gebiets aus dem Preisverlauf. Solange zu wenig Daten da sind, nutzt es das typische deutsche Tagesprofil. Ergebnis zum Beispiel: „Warte bis ca. 19:00 – typischerweise rund 6 ct/l günstiger.“ |

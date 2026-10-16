@@ -6,6 +6,8 @@ import { Icon } from '../components/Icon';
 import { MapView, type MapPin } from '../components/MapView';
 import { PlaceSearch } from '../components/PlaceSearch';
 import { Card, Empty, Field, PriceTag, Spinner, Stat, toast } from '../components/ui';
+import { RadarLoader } from '../components/motion';
+import { haptic } from '../services/haptics';
 import { useIsDark } from '../hooks/useTheme';
 import { formatCt, formatDateTime, formatDuration, formatEUR, formatKm, formatNum, formatPricePlain, formatTime } from '../i18n/format';
 import { useLang, useT } from '../i18n';
@@ -78,6 +80,7 @@ export function RoutePlanner() {
         (phase, done, total) => setBusy(phase === 'route' ? t('route.planning') : t('route.searchingStations', { done: done ?? 0, total: total ?? 0 })),
       );
       r.set({ result: result });
+      void haptic('success');
       setFitKey((k) => k + 1);
       setShowForm(false);
       if (result.fallbackRoute) toast(t('route.offlineFallback'));
@@ -106,6 +109,7 @@ export function RoutePlanner() {
         price,
         level: priceLevel(price, summary),
         title: rs.station.name,
+        brand: rs.station.brand,
         badge: stopIds.has(rs.station.id) ? String(stopIds.get(rs.station.id)) : undefined,
         minor: !stopIds.has(rs.station.id) && !top.has(rs.station.id),
       }));
@@ -135,8 +139,9 @@ export function RoutePlanner() {
         )}
 
         {busy && (
-          <div className="banner banner-info">
-            <Spinner size={16} /> {busy}
+          <div className="planning">
+            <RadarLoader size={64} />
+            <strong>{busy}</strong>
           </div>
         )}
         {error && (
@@ -296,7 +301,7 @@ function TripResultView({ res, summary, predicted }: { res: TripResult; summary:
             const st = s.candidate.ref.station;
             const eta = input.departure + s.candidate.ref.etaOffsetSec * 1000;
             return (
-              <li key={st.id} className="stop">
+              <li key={st.id} className="stop" style={{ animationDelay: `${i * 90}ms` }}>
                 <span className="stop-num">{i + 1}</span>
                 <div className="stop-body">
                   <Link to={`/station/${encodeURIComponent(st.id)}`} className="stop-name">
@@ -408,10 +413,9 @@ function TripResultView({ res, summary, predicted }: { res: TripResult; summary:
               <Link to={`/station/${encodeURIComponent(rs.station.id)}`}>
                 <span className="along-km">km {formatNum(rs.alongKm, lang, 0)}</span>
                 <span className="along-name">
-                  {rs.station.name}
-                  <span className="muted small">
-                    {' '}
-                    · {formatTime(input.departure + rs.etaOffsetSec * 1000, lang)} · {t('route.detour', { km: formatNum(rs.detourKm, lang, 1) })}
+                  <span className="ellipsis">{rs.station.name}</span>
+                  <span className="muted small ellipsis">
+                    {formatTime(input.departure + rs.etaOffsetSec * 1000, lang)} · {t('route.detour', { km: formatNum(rs.detourKm, lang, 1) })}
                   </span>
                 </span>
                 <span className="along-price">

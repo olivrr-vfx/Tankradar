@@ -26,6 +26,9 @@ export interface SettingsState {
   autoRefreshMin: number;
   onboarded: boolean;
   installHintDismissed: boolean;
+  /** Load brand logos and station photos from the internet. */
+  remoteImages: boolean;
+  mapillaryToken: string;
   set: (patch: Partial<Omit<SettingsState, 'set'>>) => void;
 }
 
@@ -53,6 +56,8 @@ export const useSettings = create<SettingsState>()(
       autoRefreshMin: 5,
       onboarded: false,
       installHintDismissed: false,
+      remoteImages: true,
+      mapillaryToken: '',
       set: (patch) => set(patch),
     }),
     { name: 'tankradar.settings', version: 1 },
