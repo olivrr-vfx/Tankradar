@@ -113,7 +113,17 @@ function UpdatePrompt() {
   const {
     needRefresh: [needRefresh],
     updateServiceWorker,
-  } = useRegisterSW({ immediate: true });
+  } = useRegisterSW({
+    immediate: true,
+    onRegisteredSW(_url, reg) {
+      if (!reg) return;
+      // Installed iOS/Android web apps rarely re-check for updates on their own:
+      // check on every return to the app and every 30 minutes.
+      const check = () => void reg.update().catch(() => undefined);
+      document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && check());
+      setInterval(check, 30 * 60_000);
+    },
+  });
   if (!needRefresh) return null;
   return (
     <div className="update-bar">
