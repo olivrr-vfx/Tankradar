@@ -287,7 +287,9 @@ export const de = {
   'settings.addVehicle': 'Fahrzeug hinzufügen',
   'settings.images': 'Logos & Fotos',
   'settings.remoteImages': 'Markenlogos und Tankstellenfotos aus dem Internet laden',
-  'settings.remoteImagesHint': 'Logos kommen als Website-Icon der Marke, Luftbilder von Esri, Fotos von Mapillary bzw. Wikimedia Commons. Ausgeschaltet zeigt Tankradar eigene Logo-Abzeichen und Illustrationen.',
+  'settings.remoteImagesHint': 'Logos kommen von Wikimedia Commons, Luftbilder von Esri, Fotos von Mapillary bzw. Wikimedia Commons. Ausgeschaltet zeigt Tankradar eigene Logo-Abzeichen und Illustrationen.',
+  'settings.google': 'Google-API-Key für Street-View-Fotos (optional)',
+  'settings.googleHint': 'Google Cloud Console → „Street View Static API“ aktivieren → API-Key erstellen (Google gewährt ein monatliches Freikontingent). Tipp: Key auf diese Website bzw. App beschränken.',
   'settings.mapillary': 'Mapillary-Token für Straßenfotos (optional)',
   'settings.mapillaryHint': 'Kostenlos: mapillary.com → Developers → „Register application“ → Client Token kopieren.',
   'settings.privacy': 'Daten & Datenschutz',
@@ -326,6 +328,7 @@ export const de = {
 
   'update.available': 'Neue Version verfügbar.',
   'update.reload': 'Aktualisieren',
+  'update.check': 'Auf Updates prüfen',
   'install.title': 'Tankradar als App installieren',
   'install.ios': 'Tippe unten in Safari auf „Teilen“ und dann auf „Zum Home-Bildschirm“. Dann startet Tankradar im Vollbild wie eine normale App.',
   'install.other': 'Installiere Tankradar als App: Browser-Menü → „App installieren“ bzw. „Zum Startbildschirm hinzufügen“.',

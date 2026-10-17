@@ -3,7 +3,7 @@ import { useLang, useT } from '../i18n';
 import { brandMeta, type BrandMeta } from '../lib/brands';
 import type { FuelType, Station } from '../lib/types';
 import { FUEL_TYPES } from '../lib/types';
-import { findStationPhoto, streetViewUrl, type StationPhoto } from '../services/photos';
+import { findStationPhoto, streetViewImageUrl, streetViewUrl, type StationPhoto } from '../services/photos';
 import { openExternal } from '../services/platform';
 import { useSettings } from '../store/settings';
 import { BrandLogo } from './BrandLogo';
@@ -142,38 +142,43 @@ export function StationIllustration({ meta, prices, hour }: { meta: BrandMeta; p
   );
 }
 
-type HeroView = 'photo' | 'aerial' | 'illu';
+type HeroView = 'street' | 'photo' | 'aerial' | 'illu';
 
 export function StationHero({ station, fuel }: { station: Station; fuel: FuelType }) {
   const t = useT();
-  const { remoteImages, mapillaryToken } = useSettings();
+  const { remoteImages, mapillaryToken, googleApiKey } = useSettings();
   const meta = useMemo(() => brandMeta(station.brand, station.name), [station.brand, station.name]);
   const [photo, setPhoto] = useState<StationPhoto | null>(null);
   const [photoLoaded, setPhotoLoaded] = useState(false);
   const [aerialLoaded, setAerialLoaded] = useState(false);
   const real = remoteImages && station.source !== 'demo';
-  const [view, setView] = useState<HeroView>(real ? 'aerial' : 'illu');
+  const [streetOk, setStreetOk] = useState<boolean | null>(null);
+  const hasStreet = real && !!googleApiKey && streetOk !== false;
+  const initial: HeroView = real ? (googleApiKey ? 'street' : 'aerial') : 'illu';
+  const [view, setView] = useState<HeroView>(initial);
   const hour = new Date().getHours();
 
   useEffect(() => {
     setPhoto(null);
     setPhotoLoaded(false);
     setAerialLoaded(false);
-    setView(real ? 'aerial' : 'illu');
+    setStreetOk(null);
+    setView(initial);
     if (!real) return;
     let cancelled = false;
     findStationPhoto(station.id, station, mapillaryToken).then((p) => {
       if (cancelled || !p) return;
       setPhoto(p);
-      setView('photo');
+      setView((v) => (v === 'aerial' ? 'photo' : v));
     });
     return () => {
       cancelled = true;
     };
-  }, [station.id, station.lat, station.lng, real, mapillaryToken]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [station.id, station.lat, station.lng, real, mapillaryToken, googleApiKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   void fuel;
   const options: { v: HeroView; label: string }[] = [
+    ...(hasStreet ? [{ v: 'street' as const, label: 'Street View' }] : []),
     ...(photo ? [{ v: 'photo' as const, label: t('hero.photo') }] : []),
     ...(real ? [{ v: 'aerial' as const, label: t('hero.aerial') }] : []),
     { v: 'illu', label: t('hero.illu') },
@@ -185,6 +190,19 @@ export function StationHero({ station, fuel }: { station: Station; fuel: FuelTyp
         <div className={`hero-layer ${aerialLoaded ? 'in' : ''}`}>
           <AerialView point={station} onLoad={() => setAerialLoaded(true)} />
         </div>
+      )}
+      {hasStreet && view === 'street' && (
+        <img
+          className={`hero-photo ${streetOk ? 'in' : ''}`}
+          src={streetViewImageUrl(station, googleApiKey)}
+          alt={station.name}
+          referrerPolicy="no-referrer"
+          onLoad={() => setStreetOk(true)}
+          onError={() => {
+            setStreetOk(false);
+            setView(photo ? 'photo' : 'aerial');
+          }}
+        />
       )}
       {photo && view === 'photo' && (
         <img className={`hero-photo ${photoLoaded ? 'in' : ''}`} src={photo.url} alt={station.name} onLoad={() => setPhotoLoaded(true)} referrerPolicy="no-referrer" />
@@ -213,6 +231,7 @@ export function StationHero({ station, fuel }: { station: Station; fuel: FuelTyp
         </a>
       )}
       {view === 'aerial' && aerialLoaded && <span className="hero-credit">{t('hero.aerialCredit')}</span>}
+      {view === 'street' && streetOk && <span className="hero-credit">© Google Street View</span>}
     </div>
   );
 }

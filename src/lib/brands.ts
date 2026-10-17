@@ -1,6 +1,6 @@
 /**
  * Brand identities of common fuel station chains in DE/AT: colours for the generated logo badge,
- * a short mark, and the website domain used to fetch the real logo (favicon) when allowed.
+ * a short mark, and candidate file names of the official logo on Wikimedia Commons.
  */
 export interface BrandMeta {
   key: string;
@@ -96,7 +96,31 @@ export function brandMeta(brand: string, name = ''): BrandMeta {
   return { key: 'free', name: label, mark, bg: FREE_COLORS[h % FREE_COLORS.length], fg: '#ffffff', accent: '#10c5c1' };
 }
 
-/** Real logo via the site favicon (only used when the user allows remote images). */
-export function logoUrl(meta: BrandMeta): string | null {
-  return meta.domain ? `https://www.google.com/s2/favicons?domain=${meta.domain}&sz=128` : null;
+/**
+ * Official logo files on Wikimedia Commons (tried in order). Only exact file names are used,
+ * so a wrong logo cannot appear – a missing file simply falls back to the generated badge.
+ */
+const COMMONS_LOGOS: Record<string, string[]> = {
+  aral: ['Aral_Logo.svg', 'Aral_logo.svg'],
+  shell: ['Shell_logo.svg'],
+  esso: ['Esso_textlogo.svg', 'Esso_logo.svg'],
+  total: ['TotalEnergies_logo.svg', 'Logo_TotalEnergies.svg'],
+  bp: ['BP_Helios_logo.svg'],
+  agip: ['Eni_SpA_(logo).svg', 'Eni_logo.svg'],
+  eni: ['Eni_SpA_(logo).svg', 'Eni_logo.svg'],
+  jet: ['JET_Tankstellen_logo.svg', 'Jet_logo.svg'],
+  omv: ['OMV_logo.svg', 'OMV_Logo.svg'],
+  orlen: ['Orlen_logo.svg', 'PKN_Orlen_logo.svg'],
+  avia: ['AVIA_logo.svg', 'Avia_logo.svg'],
+  star: ['Star_Tankstellen_logo.svg', 'Star_logo_(Orlen).svg'],
+  hem: ['HEM_logo.svg', 'HEM_Tankstellen_logo.svg'],
+  westfalen: ['Westfalen_AG_logo.svg', 'Westfalen_logo.svg'],
+  tamoil: ['Tamoil_logo.svg'],
+  socar: ['SOCAR_logo.svg'],
+  mol: ['MOL_Group_logo.svg', 'MOL_logo.svg'],
+  q1: ['Q1_Energie_logo.svg'],
+};
+
+export function logoUrls(meta: BrandMeta): string[] {
+  return (COMMONS_LOGOS[meta.key] ?? []).map((f) => `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(f)}?width=160`);
 }
