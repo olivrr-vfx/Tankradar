@@ -8,6 +8,7 @@ import { openExternal } from '../services/platform';
 import { useSettings } from '../store/settings';
 import { BrandLogo } from './BrandLogo';
 import { Icon } from './Icon';
+import { AerialView } from './AerialView';
 
 type Sky = 'day' | 'dusk' | 'night';
 
@@ -141,44 +142,77 @@ export function StationIllustration({ meta, prices, hour }: { meta: BrandMeta; p
   );
 }
 
+type HeroView = 'photo' | 'aerial' | 'illu';
+
 export function StationHero({ station, fuel }: { station: Station; fuel: FuelType }) {
   const t = useT();
   const { remoteImages, mapillaryToken } = useSettings();
   const meta = useMemo(() => brandMeta(station.brand, station.name), [station.brand, station.name]);
   const [photo, setPhoto] = useState<StationPhoto | null>(null);
-  const [loaded, setLoaded] = useState(false);
+  const [photoLoaded, setPhotoLoaded] = useState(false);
+  const [aerialLoaded, setAerialLoaded] = useState(false);
+  const real = remoteImages && station.source !== 'demo';
+  const [view, setView] = useState<HeroView>(real ? 'aerial' : 'illu');
   const hour = new Date().getHours();
 
   useEffect(() => {
     setPhoto(null);
-    setLoaded(false);
-    if (!remoteImages || station.source === 'demo') return;
+    setPhotoLoaded(false);
+    setAerialLoaded(false);
+    setView(real ? 'aerial' : 'illu');
+    if (!real) return;
     let cancelled = false;
-    findStationPhoto(station.id, station, mapillaryToken).then((p) => !cancelled && setPhoto(p));
+    findStationPhoto(station.id, station, mapillaryToken).then((p) => {
+      if (cancelled || !p) return;
+      setPhoto(p);
+      setView('photo');
+    });
     return () => {
       cancelled = true;
     };
-  }, [station.id, station.lat, station.lng, station.source, remoteImages, mapillaryToken]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [station.id, station.lat, station.lng, real, mapillaryToken]); // eslint-disable-line react-hooks/exhaustive-deps
 
   void fuel;
+  const options: { v: HeroView; label: string }[] = [
+    ...(photo ? [{ v: 'photo' as const, label: t('hero.photo') }] : []),
+    ...(real ? [{ v: 'aerial' as const, label: t('hero.aerial') }] : []),
+    { v: 'illu', label: t('hero.illu') },
+  ];
   return (
     <div className="hero">
       <StationIllustration meta={meta} prices={station.prices} hour={hour} />
-      {photo && <img className={`hero-photo ${loaded ? 'in' : ''}`} src={photo.url} alt={station.name} onLoad={() => setLoaded(true)} referrerPolicy="no-referrer" />}
+      {real && view === 'aerial' && (
+        <div className={`hero-layer ${aerialLoaded ? 'in' : ''}`}>
+          <AerialView point={station} onLoad={() => setAerialLoaded(true)} />
+        </div>
+      )}
+      {photo && view === 'photo' && (
+        <img className={`hero-photo ${photoLoaded ? 'in' : ''}`} src={photo.url} alt={station.name} onLoad={() => setPhotoLoaded(true)} referrerPolicy="no-referrer" />
+      )}
       <div className="hero-shade" />
       <div className="hero-logo">
         <BrandLogo brand={station.brand} name={station.name} size={64} />
       </div>
       <div className="hero-actions">
+        {options.length > 1 && (
+          <div className="hero-switch" role="radiogroup">
+            {options.map((o) => (
+              <button key={o.v} role="radio" aria-checked={view === o.v} className={view === o.v ? 'on' : ''} onClick={() => setView(o.v)}>
+                {o.label}
+              </button>
+            ))}
+          </div>
+        )}
         <button className="glass-btn" onClick={() => void openExternal(streetViewUrl(station))}>
           <Icon name="map" size={16} /> Street View
         </button>
       </div>
-      {photo && loaded && (
+      {view === 'photo' && photo && photoLoaded && (
         <a className="hero-credit" href={photo.link} target="_blank" rel="noreferrer">
           {t('station.photoBy')} {photo.credit} · {photo.license}
         </a>
       )}
+      {view === 'aerial' && aerialLoaded && <span className="hero-credit">{t('hero.aerialCredit')}</span>}
     </div>
   );
 }
