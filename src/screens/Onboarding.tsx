@@ -26,8 +26,12 @@ export function Onboarding() {
         </div>
 
         {step === 0 && (
-          <div className="onb-step">
-            <Logo size={72} />
+          <div className="onb-step" key="s0">
+            <div className="onb-logo">
+              <span className="onb-ping" />
+              <span className="onb-ping d2" />
+              <Logo size={84} />
+            </div>
             <h1>{t('onb.welcome')}</h1>
             <p className="muted">{t('onb.welcomeText')}</p>
             <ul className="onb-features">
@@ -41,7 +45,7 @@ export function Onboarding() {
         )}
 
         {step === 1 && (
-          <div className="onb-step">
+          <div className="onb-step" key="s1">
             <h2>{t('onb.fuelTitle')}</h2>
             <div className="onb-fuels">
               {FUEL_TYPES.map((f) => (
@@ -79,7 +83,7 @@ export function Onboarding() {
         )}
 
         {step === 2 && (
-          <div className="onb-step">
+          <div className="onb-step" key="s2">
             <div className="onb-icon">
               <Icon name="locate" size={40} />
             </div>

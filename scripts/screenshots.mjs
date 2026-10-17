@@ -29,7 +29,7 @@ async function shoot(name, { width, height, mobile, dark, path, before }) {
   await ctx.addInitScript(() => {
     localStorage.setItem(
       'tankradar.settings',
-      JSON.stringify({ state: { onboarded: true, lang: 'de', fuel: 'e10', radiusKm: 5, location: { lat: 50.1109, lng: 8.6821 }, locationLabel: 'Frankfurt am Main', provider: 'demo' }, version: 1 }),
+      JSON.stringify({ state: { onboarded: true, installHintDismissed: true, lang: 'de', fuel: 'e10', radiusKm: 5, location: { lat: 50.1109, lng: 8.6821 }, locationLabel: 'Frankfurt am Main', provider: 'demo' }, version: 1 }),
     );
     localStorage.setItem(
       'tankradar.route',

@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AlertEditor } from '../components/AlertEditor';
+import { StationHero } from '../components/StationHero';
+import { brandMeta } from '../lib/brands';
+import { haptic } from '../services/haptics';
 import { Attribution } from '../components/Attribution';
 import { BarChart, LineChart } from '../components/charts';
 import { Icon } from '../components/Icon';
@@ -141,7 +144,10 @@ export function StationDetail() {
 
   return (
     <div className="page station-page">
+      <div className="hero-wrap">
+      <StationHero station={station} fuel={fuel} />
       <BackBar
+        floating
         actions={
           <>
             <button
@@ -159,16 +165,25 @@ export function StationDetail() {
             >
               <Icon name="share" />
             </button>
-            <button className={`icon-btn ${isFav ? 'is-fav' : ''}`} aria-pressed={isFav} title={isFav ? t('station.unfavorite') : t('station.favorite')} onClick={() => toggleFavorite(station)}>
+            <button
+              className={`icon-btn ${isFav ? 'is-fav pop' : ''}`}
+              aria-pressed={isFav}
+              title={isFav ? t('station.unfavorite') : t('station.favorite')}
+              onClick={() => {
+                void haptic(isFav ? 'light' : 'success');
+                toggleFavorite(station);
+              }}
+            >
               <Icon name="star" filled={isFav} />
             </button>
           </>
         }
       />
+      </div>
 
       <header className="station-head">
         <div className="station-title">
-          <span className="eyebrow">{station.brand || '—'}</span>
+          <span className="eyebrow">{brandMeta(station.brand, station.name).name}</span>
           <h1>{station.name}</h1>
           <p className="muted">
             {address}, {station.postCode} {station.place}
@@ -325,11 +340,11 @@ export function StationDetail() {
   );
 }
 
-export function BackBar({ actions, title }: { actions?: React.ReactNode; title?: React.ReactNode }) {
+export function BackBar({ actions, title, floating }: { actions?: React.ReactNode; title?: React.ReactNode; floating?: boolean }) {
   const t = useT();
   const navigate = useNavigate();
   return (
-    <div className="back-bar">
+    <div className={`back-bar ${floating ? 'floating' : ''}`}>
       <button className="icon-btn" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))} aria-label={t('common.back')}>
         <Icon name="back" />
       </button>

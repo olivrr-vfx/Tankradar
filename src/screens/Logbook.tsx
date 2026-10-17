@@ -153,7 +153,7 @@ export function Logbook() {
             <BarChart ariaLabel={t('log.monthly')} height={160} formatY={(v) => formatEUR(v, lang, 0)} data={months.map((m) => ({ key: m.key, label: m.label, value: m.value }))} />
           </Card>
           <Card>
-            <table className="table">
+            <div className="table-wrap"><table className="table">
               <thead>
                 <tr>
                   <th>{t('log.date')}</th>
@@ -191,7 +191,7 @@ export function Logbook() {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></div>
           </Card>
         </>
       )}

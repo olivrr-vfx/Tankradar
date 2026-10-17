@@ -7,7 +7,9 @@ import { InstallHint } from '../components/InstallHint';
 import { PlaceSearch } from '../components/PlaceSearch';
 import { Sheet, type SheetState } from '../components/Sheet';
 import { StationRow } from '../components/StationRow';
-import { Empty, PriceTag, Segmented, Spinner, Stat, Toggle } from '../components/ui';
+import { Empty, PriceTag, Segmented, Stat, Toggle } from '../components/ui';
+import { RadarLoader, SkeletonRows, TopProgress } from '../components/motion';
+import { haptic } from '../services/haptics';
 import { useAreaProfile } from '../hooks/useAreaProfile';
 import { useLocate } from '../hooks/useLocate';
 import { useStationsView } from '../hooks/useStationsView';
@@ -39,7 +41,10 @@ export function FuelSwitch({ size = 'm' }: { size?: 's' | 'm' }) {
       value={fuels.includes(fuel) ? fuel : fuels[0]}
       ariaLabel="Kraftstoff"
       options={fuels.map((f) => ({ value: f, label: t(`fuel.short.${f}`) }))}
-      onChange={(f) => set({ fuel: f })}
+      onChange={(f) => {
+        void haptic('light');
+        set({ fuel: f });
+      }}
     />
   );
 }
@@ -87,6 +92,7 @@ export function Radar() {
           level: view.levelOf(s),
           closed: s.isOpen === false,
           title: s.name,
+          brand: s.brand,
           badge: settings.sort === 'price' && i === 0 && s.isOpen !== false ? '★' : undefined,
           // Declutter dense areas: only the 30 best get a price pill.
           minor: view.list.length > 40 && i >= 30,
@@ -109,7 +115,7 @@ export function Radar() {
           <PriceTag price={view.summary.mean} size="m" />
         </>
       ) : (
-        <span className="muted small">{loading ? t('common.loading') : t('radar.stations', { n: view.list.length })}</span>
+        <span className="muted small row gap-s">{loading ? <><RadarLoader size={18} /> {t('common.loading')}</> : t('radar.stations', { n: view.list.length })}</span>
       )}
     </div>
   );
@@ -128,6 +134,7 @@ export function Radar() {
         radiusKm={settings.radiusKm}
       />
 
+      {loading && <div className="map-scan" aria-hidden="true" />}
       <div className="radar-top">
         <PlaceSearch
           value={settings.locationLabel}
@@ -158,7 +165,8 @@ export function Radar() {
         </button>
       )}
 
-      <Sheet state={sheet} onState={setSheet} header={header}>
+      <Sheet state={sheet} onState={setSheet} header={header} onRefresh={() => load()}>
+        <TopProgress active={loading && view.list.length > 0} />
         <InstallHint />
         {isDemo && (
           <div className="banner banner-info">
@@ -229,8 +237,8 @@ export function Radar() {
           </label>
           <Toggle checked={settings.onlyOpen} onChange={(onlyOpen) => settings.set({ onlyOpen })} label={t('radar.onlyOpen')} />
           <span className="muted small grow-right">
-            {loading ? <Spinner size={14} /> : fetchedAt ? formatAgo(fetchedAt, lang) : ''}
-            <button className="icon-btn icon-btn-s" onClick={() => void load()} aria-label="Refresh" title="Refresh">
+            <span className="ago">{fetchedAt ? formatAgo(fetchedAt, lang) : ''}</span>
+            <button className={`icon-btn icon-btn-s ${loading ? 'spinning' : ''}`} onClick={() => void load()} aria-label="Refresh" title="Refresh">
               <Icon name="refresh" size={16} />
             </button>
           </span>
@@ -242,7 +250,8 @@ export function Radar() {
           </Empty>
         )}
 
-        <div className="station-list" role="list">
+        {loading && view.list.length === 0 && <SkeletonRows />}
+        <div className="station-list" role="list" key={`${fetchedAt}-${settings.sort}-${view.fuel}`}>
           {view.list.map((s, i) => (
             <StationRow
               key={s.id}
@@ -254,6 +263,7 @@ export function Radar() {
               onHover={setHoverId}
               rank={settings.sort === 'price' && s.isOpen !== false ? i : undefined}
               favorite={!!favorites[s.id]}
+              index={i}
             />
           ))}
         </div>

@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Icon } from '../components/Icon';
-import { Card, Field, NumberInput, Segmented, Spinner, toast } from '../components/ui';
+import { Card, Field, NumberInput, Segmented, Spinner, Toggle, toast } from '../components/ui';
 import { useLang, useT } from '../i18n';
 import type { ProviderId, Vehicle } from '../lib/types';
 import { FUEL_TYPES } from '../lib/types';
@@ -142,6 +142,19 @@ export function Settings() {
             </select>
           </Field>
         </div>
+      </Card>
+
+      <Card title={t('settings.images')}>
+        <Toggle checked={s.remoteImages} onChange={(remoteImages) => s.set({ remoteImages })} label={t('settings.remoteImages')} />
+        <p className="muted small">{t('settings.remoteImagesHint')}</p>
+        <Field label={t('settings.mapillary')} hint={t('settings.mapillaryHint')}>
+          <div className="row gap-s">
+            <input className="grow mono" value={s.mapillaryToken} placeholder="MLY|…" onChange={(e) => s.set({ mapillaryToken: e.target.value.trim() })} spellCheck={false} autoComplete="off" />
+            <button type="button" className="btn btn-s" onClick={() => void openExternal('https://www.mapillary.com/dashboard/developers')}>
+              <Icon name="external" size={14} /> Token
+            </button>
+          </div>
+        </Field>
       </Card>
 
       <Card

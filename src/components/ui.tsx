@@ -4,10 +4,12 @@ import { splitPrice } from '../i18n/format';
 import { useLang, useT } from '../i18n';
 import type { PriceLevel } from '../lib/stats';
 import { Icon, type IconName } from './Icon';
+import { RadarLoader, useCountUp } from './motion';
 
-export function PriceTag({ price, size = 'm', level }: { price: number | null | undefined; size?: 's' | 'm' | 'l' | 'xl'; level?: PriceLevel }) {
+export function PriceTag({ price, size = 'm', level, animate = true }: { price: number | null | undefined; size?: 's' | 'm' | 'l' | 'xl'; level?: PriceLevel; animate?: boolean }) {
   const lang = useLang();
-  const sp = splitPrice(price, lang);
+  const shown = useCountUp(animate ? price : null, { duration: 650 });
+  const sp = splitPrice(animate ? (shown == null ? price : Math.round(shown * 1000) / 1000) : price, lang);
   if (!sp) return <span className={`price price-${size} price-none`}>–</span>;
   return (
     <span className={`price price-${size} ${level ? `lvl-${level}` : ''}`}>
@@ -176,7 +178,7 @@ export function Empty({ icon = 'info', children, action }: { icon?: IconName; ch
 }
 
 export function Spinner({ size = 18 }: { size?: number }) {
-  return <span className="spinner" style={{ width: size, height: size }} aria-label="…" />;
+  return <RadarLoader size={Math.max(16, size)} />;
 }
 
 export function Modal({ open, onClose, title, children, wide }: { open: boolean; onClose: () => void; title?: ReactNode; children: ReactNode; wide?: boolean }) {

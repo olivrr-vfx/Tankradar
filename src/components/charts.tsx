@@ -127,7 +127,7 @@ export function LineChart({ points, from, to, step = true, band, reference, heig
             </text>
           ))}
           {bandPath && <path d={bandPath} className="band" />}
-          {area && <path d={area} className="area" />}
+          {area && <path key={`a${from}-${points.length}`} d={area} className="area" />}
           {reference && (
             <g>
               <line x1={m.l} x2={m.l + iw} y1={y(reference.value)} y2={y(reference.value)} className="ref-line" />
@@ -136,7 +136,7 @@ export function LineChart({ points, from, to, step = true, band, reference, heig
               </text>
             </g>
           )}
-          <path d={d} className="line" />
+          <path key={`l${from}-${points.length}`} d={d} className="line draw" pathLength={1} />
           {hover && (
             <g>
               <line x1={x(hover.t)} x2={x(hover.t)} y1={m.t} y2={m.t + ih} className="crosshair" />
@@ -211,7 +211,11 @@ export function BarChart({ data, height = 180, formatY, labelEvery = 1, ariaLabe
             return (
               <g key={d.key} onPointerEnter={() => setHover(i)} onClick={() => setHover(i)}>
                 <rect x={m.l + slot * i} y={m.t} width={slot} height={ih} fill="transparent" />
-                <path d={path} className={`bar tone-${d.tone ?? 'brand'} ${d.highlight ? 'hl' : ''} ${hover === i ? 'hover' : ''}`} />
+                <path
+                  d={path}
+                  className={`bar ${up ? 'grow-up' : 'grow-down'} tone-${d.tone ?? 'brand'} ${d.highlight ? 'hl' : ''} ${hover === i ? 'hover' : ''}`}
+                  style={{ animationDelay: `${Math.min(i, 30) * 22}ms` }}
+                />
                 {(i % labelEvery === 0 || d.highlight) && (
                   <text x={cx} y={height - 6} className={`axis ${d.highlight ? 'axis-hl' : ''}`} textAnchor="middle">
                     {d.label}

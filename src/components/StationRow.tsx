@@ -4,6 +4,8 @@ import { useLang, useT } from '../i18n';
 import type { PriceLevel } from '../lib/stats';
 import type { FuelType, Station } from '../lib/types';
 import { Icon } from './Icon';
+import { BrandLogo } from './BrandLogo';
+import { haptic } from '../services/haptics';
 import { OpenBadge, PriceTag } from './ui';
 
 export function brandLabel(s: Station): string {
@@ -19,6 +21,7 @@ export function StationRow({
   onHover,
   rank,
   favorite,
+  index = 0,
 }: {
   station: Station;
   fuel: FuelType;
@@ -28,6 +31,7 @@ export function StationRow({
   onHover?: (id: string | null) => void;
   rank?: number;
   favorite?: boolean;
+  index?: number;
 }) {
   const t = useT();
   const lang = useLang();
@@ -37,12 +41,16 @@ export function StationRow({
     <Link
       to={`/station/${encodeURIComponent(station.id)}`}
       className={`station-row ${selected ? 'selected' : ''} ${station.isOpen === false ? 'is-closed-row' : ''}`}
+      style={{ animationDelay: `${Math.min(index, 14) * 35}ms` }}
+      onClick={() => void haptic('light')}
       onMouseEnter={() => onHover?.(station.id)}
       onMouseLeave={() => onHover?.(null)}
       onFocus={() => onHover?.(station.id)}
     >
-      <span className={`brand-chip lvl-${level}`} aria-hidden="true">
-        {rank != null && rank < 3 ? rank + 1 : brandLabel(station).slice(0, 1).toUpperCase()}
+      <span className="logo-slot">
+        <BrandLogo brand={station.brand} name={station.name} size={42} />
+        {rank != null && rank < 3 && <span className={`rank-badge rank-${rank + 1}`}>{rank + 1}</span>}
+        <span className={`lvl-dot lvl-${level}`} aria-hidden="true" />
       </span>
       <span className="station-main">
         <span className="station-name">

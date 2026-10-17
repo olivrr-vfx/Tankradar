@@ -6,6 +6,9 @@ import { useLang } from '../i18n';
 import { boundsOf } from '../lib/geo';
 import type { PriceLevel } from '../lib/stats';
 import type { LatLng } from '../lib/types';
+import { brandMeta } from '../lib/brands';
+
+const escapeHtml = (x: string) => x.replace(/[<>&"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
 export interface MapPin extends LatLng {
   id: string;
@@ -14,6 +17,7 @@ export interface MapPin extends LatLng {
   closed?: boolean;
   badge?: string;
   title: string;
+  brand?: string;
   /** Render as a small dot instead of a price pill (declutter). */
   minor?: boolean;
 }
@@ -127,7 +131,23 @@ export function MapView({ center, pins, selectedId, onSelect, onMoved, user, rou
   useEffect(() => {
     const m = map.current;
     if (!m || !ready.current) return;
-    (m.getSource('route') as maplibregl.GeoJSONSource | undefined)?.setData(lineFeature(route ?? null));
+    const src = m.getSource('route') as maplibregl.GeoJSONSource | undefined;
+    if (!src) return;
+    if (!route?.length || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      src.setData(lineFeature(route ?? null));
+      return;
+    }
+    // Draw the route progressively for a bit of delight.
+    let raf = 0;
+    const t0 = performance.now();
+    const tick = (now: number) => {
+      const k = Math.min(1, (now - t0) / 1100);
+      const e = 1 - (1 - k) ** 3;
+      src.setData(lineFeature(route.slice(0, Math.max(2, Math.ceil(route.length * e)))));
+      if (k < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, [route]);
 
   useEffect(() => {
@@ -147,30 +167,38 @@ export function MapView({ center, pins, selectedId, onSelect, onMoved, user, rou
         markers.current.delete(id);
       }
     }
+    let fresh = 0;
     for (const p of pins) {
       const sp = splitPrice(p.price, lang);
       const minor = p.minor && p.id !== selectedId;
-      const html = minor ? '' : `${p.badge ? `<span class="pin-badge">${p.badge}</span>` : ''}${sp ? `${sp.main}<sup>${sp.sup}</sup>` : '–'}`;
+      const bm = p.brand !== undefined ? brandMeta(p.brand, p.title) : null;
+      const logo = bm && !minor ? `<span class="pin-logo" style="background:${bm.bg};color:${bm.fg}">${escapeHtml(bm.mark.slice(0, 1))}</span>` : '';
+      const html = minor ? '' : `${p.badge ? `<span class="pin-badge">${p.badge}</span>` : ''}${logo}${sp ? `${sp.main}<sup>${sp.sup}</sup>` : '–'}`;
       const cls = `pin lvl-${p.level}${minor ? ' pin-dot' : ''}${p.closed ? ' closed' : ''}${p.id === selectedId ? ' selected' : ''}`;
       let mk = markers.current.get(p.id);
       if (!mk) {
-        const node = document.createElement('button');
-        node.type = 'button';
-        node.addEventListener('click', (e) => {
+        // The marker element is positioned by MapLibre via `transform` and must never be animated
+        // itself (that made the pins lag behind the map). All visuals live on the inner element.
+        const wrap = document.createElement('div');
+        wrap.className = 'pin-anchor';
+        const inner = document.createElement('button');
+        inner.type = 'button';
+        inner.style.setProperty('--d', `${Math.min(fresh++, 25) * 18}ms`);
+        inner.addEventListener('click', (e) => {
           e.stopPropagation();
           onSelectRef.current?.(p.id);
         });
-        mk = new maplibregl.Marker({ element: node, anchor: p.minor ? 'center' : 'bottom' }).setLngLat([p.lng, p.lat]).addTo(m);
-        // Remember MapLibre's own classes (positioning!) so we never overwrite them.
-        node.dataset.base = node.className;
+        wrap.appendChild(inner);
+        mk = new maplibregl.Marker({ element: wrap, anchor: p.minor ? 'center' : 'bottom' }).setLngLat([p.lng, p.lat]).addTo(m);
         markers.current.set(p.id, mk);
       }
-      const node = mk.getElement();
-      node.className = `${node.dataset.base ?? ''} ${cls}`;
-      node.innerHTML = html;
+      const wrap = mk.getElement();
+      const node = wrap.firstElementChild as HTMLElement;
+      if (node.className !== cls) node.className = cls;
+      if (node.innerHTML !== html) node.innerHTML = html;
       node.title = p.title;
       node.setAttribute('aria-label', `${p.title}: ${sp ? sp.main + sp.sup : '–'} €`);
-      node.style.zIndex = p.id === selectedId ? '10' : minor ? '0' : p.badge ? '5' : p.level === 'cheap' ? '3' : '1';
+      wrap.style.zIndex = p.id === selectedId ? '10' : minor ? '0' : p.badge ? '5' : p.level === 'cheap' ? '3' : '1';
     }
   }, [pins, selectedId, lang]);
 
