@@ -9,7 +9,7 @@ const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 
 export default defineConfig({
   // Relative base: works on GitHub Pages sub-paths, inside Capacitor and inside Tauri.
   base: './',
-  define: { __APP_VERSION__: JSON.stringify(pkg.version) },
+  define: { __APP_VERSION__: JSON.stringify(pkg.version), __BUILD_TIME__: JSON.stringify(new Date().toISOString()) },
   server: { port: 5173, strictPort: true, host: true },
   build: {
     target: 'es2022',

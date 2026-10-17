@@ -108,5 +108,20 @@ export function findStationPhoto(id: string, p: LatLng, mapillaryToken: string):
   return hit;
 }
 
-/** Google Street View at the station (free deep link, no API key). */
-export const streetViewUrl = (p: LatLng) => `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${p.lat.toFixed(6)},${p.lng.toFixed(6)}`;
+/**
+ * Google Street View at the station. The classic `cbll` link works in the Google Maps app on
+ * iOS/Android and in the browser (the `map_action=pano` variant was ignored by the iOS app,
+ * which then opened some unrelated panorama).
+ */
+export const streetViewUrl = (p: LatLng) => {
+  const ll = `${p.lat.toFixed(6)},${p.lng.toFixed(6)}`;
+  return `https://www.google.com/maps?ll=${ll}&q=${ll}&layer=c&cbll=${ll}&cbp=12,0,0,0,0`;
+};
+
+/**
+ * Street View photo via the Google Street View Static API (needs the user's own API key; Google
+ * includes a monthly free quota). Without a heading Google turns the camera towards the location.
+ * `return_error_code` makes the request fail (→ img onError) when there is no imagery.
+ */
+export const streetViewImageUrl = (p: LatLng, key: string, width = 640, height = 360) =>
+  `https://maps.googleapis.com/maps/api/streetview?size=${width}x${height}&scale=2&location=${p.lat.toFixed(6)},${p.lng.toFixed(6)}&radius=80&source=outdoor&fov=75&return_error_code=true&key=${encodeURIComponent(key)}`;

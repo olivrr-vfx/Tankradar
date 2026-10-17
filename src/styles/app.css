@@ -1840,6 +1840,17 @@ input[type='range'] {
 .more-head h1 {
   margin: 0;
 }
+.version-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 4px 4px 0;
+}
+.spin-icon {
+  animation: spin 0.9s linear infinite;
+}
 .more-list {
   display: flex;
   flex-direction: column;

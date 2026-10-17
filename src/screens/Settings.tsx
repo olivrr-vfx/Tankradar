@@ -7,6 +7,7 @@ import { FUEL_TYPES } from '../lib/types';
 import { getProvider } from '../providers';
 import { clearHistory, exportHistory, importHistory } from '../services/historyStore';
 import { openExternal, saveTextFile } from '../services/platform';
+import { buildLabel, hardReload } from '../services/update';
 import { DEFAULT_LOCATION, useSettings } from '../store/settings';
 import { uid, useUser } from '../store/user';
 import { availableNavApps } from '../components/NavChooser';
@@ -147,6 +148,14 @@ export function Settings() {
       <Card title={t('settings.images')}>
         <Toggle checked={s.remoteImages} onChange={(remoteImages) => s.set({ remoteImages })} label={t('settings.remoteImages')} />
         <p className="muted small">{t('settings.remoteImagesHint')}</p>
+        <Field label={t('settings.google')} hint={t('settings.googleHint')}>
+          <div className="row gap-s">
+            <input className="grow mono" value={s.googleApiKey} placeholder="AIza…" onChange={(e) => s.set({ googleApiKey: e.target.value.trim() })} spellCheck={false} autoComplete="off" />
+            <button type="button" className="btn btn-s" onClick={() => void openExternal('https://console.cloud.google.com/google/maps-apis/credentials')}>
+              <Icon name="external" size={14} /> Key
+            </button>
+          </div>
+        </Field>
         <Field label={t('settings.mapillary')} hint={t('settings.mapillaryHint')}>
           <div className="row gap-s">
             <input className="grow mono" value={s.mapillaryToken} placeholder="MLY|…" onChange={(e) => s.set({ mapillaryToken: e.target.value.trim() })} spellCheck={false} autoComplete="off" />
@@ -198,7 +207,10 @@ export function Settings() {
 
       <Card title={t('settings.about')}>
         <p>{t('settings.aboutText')}</p>
-        <p className="muted small">{t('settings.version', { v: __APP_VERSION__ })}</p>
+        <p className="muted small">{t('settings.version', { v: buildLabel() })}</p>
+        <button className="btn btn-s" onClick={() => void hardReload()}>
+          <Icon name="refresh" size={16} /> {t('update.check')}
+        </button>
         <div className="row gap-s wrap">
           <button className="btn" onClick={() => void openExternal(REPO)}>
             <Icon name="github" size={16} /> {t('settings.source')}

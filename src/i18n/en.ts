@@ -289,7 +289,9 @@ export const en: Dict = {
   'settings.addVehicle': 'Add vehicle',
   'settings.images': 'Logos & photos',
   'settings.remoteImages': 'Load brand logos and station photos from the internet',
-  'settings.remoteImagesHint': 'Logos come from the brand website icon, aerial images from Esri, photos from Mapillary or Wikimedia Commons. When off, Tankradar shows its own logo badges and illustrations.',
+  'settings.remoteImagesHint': 'Logos come from Wikimedia Commons, aerial images from Esri, photos from Mapillary or Wikimedia Commons. When off, Tankradar shows its own logo badges and illustrations.',
+  'settings.google': 'Google API key for Street View photos (optional)',
+  'settings.googleHint': 'Google Cloud Console → enable “Street View Static API” → create an API key (Google includes a monthly free quota). Tip: restrict the key to this website/app.',
   'settings.mapillary': 'Mapillary token for street photos (optional)',
   'settings.mapillaryHint': 'Free: mapillary.com → Developers → “Register application” → copy the client token.',
   'settings.privacy': 'Data & privacy',
@@ -328,6 +330,7 @@ export const en: Dict = {
 
   'update.available': 'New version available.',
   'update.reload': 'Update',
+  'update.check': 'Check for updates',
   'install.title': 'Install Tankradar as an app',
   'install.ios': 'In Safari, tap “Share” and then “Add to Home Screen”. Tankradar then starts full-screen like a regular app.',
   'install.other': 'Install Tankradar as an app: browser menu → “Install app” or “Add to Home screen”.',

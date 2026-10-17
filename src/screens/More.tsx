@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom';
 import { Icon, Logo, type IconName } from '../components/Icon';
+import { useState } from 'react';
 import { useT } from '../i18n';
+import { buildLabel, hardReload } from '../services/update';
 import { InstallHint } from '../components/InstallHint';
 
 export function More() {
   const t = useT();
+  const [busy, setBusy] = useState(false);
   const items: { to: string; icon: IconName; label: string }[] = [
     { to: '/stats', icon: 'chart', label: t('nav.stats') },
     { to: '/favorites', icon: 'star', label: t('nav.favorites') },
@@ -28,6 +31,19 @@ export function More() {
           </Link>
         ))}
       </nav>
+      <div className="version-box">
+        <span className="muted small">Tankradar {buildLabel()}</span>
+        <button
+          className="btn btn-s"
+          onClick={async () => {
+            setBusy(true);
+            await hardReload();
+          }}
+          disabled={busy}
+        >
+          <Icon name="refresh" size={16} className={busy ? 'spin-icon' : ''} /> {t('update.check')}
+        </button>
+      </div>
     </div>
   );
 }

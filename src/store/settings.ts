@@ -29,6 +29,7 @@ export interface SettingsState {
   /** Load brand logos and station photos from the internet. */
   remoteImages: boolean;
   mapillaryToken: string;
+  googleApiKey: string;
   set: (patch: Partial<Omit<SettingsState, 'set'>>) => void;
 }
 
@@ -58,6 +59,7 @@ export const useSettings = create<SettingsState>()(
       installHintDismissed: false,
       remoteImages: true,
       mapillaryToken: '',
+      googleApiKey: '',
       set: (patch) => set(patch),
     }),
     { name: 'tankradar.settings', version: 1 },
